@@ -14,39 +14,50 @@ public class ExcelReader{
 	private final Path initialPath = Paths.get("files\\Base").toAbsolutePath();
 	private final Path finalPath =  Paths.get("files\\Final").toAbsolutePath();
 	
-	private File files;
+	private File[] files;
 	
 	public ExcelReader() {
-		files = initialPath.toFile().listFiles()[0];
+		files = initialPath.toFile().listFiles();
 	}
 	
-	public String parseExcel() {
+	public String[] parseExcel() {
 		
-		String parse = "";
+		String[] parse = new String[files.length];
+		
+		for (int i = 0; i < parse.length; i++) {
+			parse[i] = "";
+		}
 		
 		Sheet sheet;
 		
-		try{
+		for(int n = 0; n < files.length; n++) {
 			
-			Workbook w =  Workbook.getWorkbook(files);
-			sheet = w.getSheet(0);
+			try{
+				
+				Workbook w =  Workbook.getWorkbook(files[n]);
+				sheet = w.getSheet(0);
+				
+			} catch(BiffException | IOException e) { e.printStackTrace(); return null; }
 			
-		} catch(BiffException | IOException e) { e.printStackTrace(); return null; }
-		
-		for (int i = 0; i < sheet.getRows(); i++) {
-			int size = checkRowSize(i, sheet);
-			
-			if(size == 1)
-				parse += sheet.getCell(0, i).getContents() + ":" + sheet.getCell(1, i).getContents() + ";\n";
-			else if(size > 1) {
-				parse += sheet.getCell(0, i).getContents() + ":[";
-				for(int j = 0; j < size; j++) {
-					parse += sheet.getCell(j+1, i).getContents();
-					if(j != size-1)
-						parse += ",";
+			for (int i = 0; i < sheet.getRows(); i++) {
+				int size = checkRowSize(i, sheet);
+				
+				if(size == 1)
+					parse[n] += sheet.getCell(0, i).getContents() + ":" + sheet.getCell(1, i).getContents() + ";\n";
+				
+				else if(size > 1) {
+					parse[n] += sheet.getCell(0, i).getContents() + ":[";
+					
+					for(int j = 0; j < size; j++) {
+						parse[n] += sheet.getCell(j+1, i).getContents();
+						if(j != size-1)
+							parse[n] += ",";
+					}
+					
+					parse[n] += "];\n";
 				}
-				parse += "];\n";
 			}
+			
 		}
 		
 		
