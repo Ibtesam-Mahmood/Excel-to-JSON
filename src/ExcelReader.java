@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
@@ -33,7 +34,19 @@ public class ExcelReader{
 		} catch(BiffException | IOException e) { e.printStackTrace(); return null; }
 		
 		for (int i = 0; i < sheet.getRows(); i++) {
-			parse += sheet.getCell(0, i).getContents() + ":" + sheet.getCell(1, i).getContents() + ";\n";
+			int size = checkRowSize(i, sheet);
+			
+			if(size == 1)
+				parse += sheet.getCell(0, i).getContents() + ":" + sheet.getCell(1, i).getContents() + ";\n";
+			else if(size > 1) {
+				parse += sheet.getCell(0, i).getContents() + ":[";
+				for(int j = 0; j < size; j++) {
+					parse += sheet.getCell(j+1, i).getContents();
+					if(j != size-1)
+						parse += ",";
+				}
+				parse += "];\n";
+			}
 		}
 		
 		
@@ -51,8 +64,23 @@ public class ExcelReader{
 			System.out.println(name + " is not the correct format for this program");
 			return false;
 		}
+	}
+	
+	private int checkRowSize(int row, Sheet sheet) {
+		int n = 0;
 		
+		for (int i = 1; i < sheet.getColumns(); i++) {
+			
+			Cell temp =  sheet.getCell(i, row);
+			
+			if(temp.getContents() == "")
+				break;
+			else
+				n++;
+			
+		}
 		
+		return n;
 	}
 	
 	
