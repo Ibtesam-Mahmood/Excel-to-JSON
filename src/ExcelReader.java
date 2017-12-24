@@ -12,7 +12,6 @@ public class ExcelReader{
 
 	
 	private final Path initialPath = Paths.get("files\\Base").toAbsolutePath();
-	private final Path finalPath =  Paths.get("files\\Final").toAbsolutePath();
 	
 	private File[] files;
 	
@@ -20,7 +19,13 @@ public class ExcelReader{
 		files = initialPath.toFile().listFiles();
 	}
 	
-	public String[] parseExcel() {
+	public void convert() {
+		String[] JSONObjects = parseExcel();
+		JSONWriter writer =  new JSONWriter(JSONObjects, this.files);
+		writer.WriteJSON();
+	}
+	
+	private String[] parseExcel() {
 		
 		String[] parse = new String[files.length];
 		
