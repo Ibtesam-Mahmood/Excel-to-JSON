@@ -32,7 +32,7 @@ public class JSONWriter {
 			try( FileWriter writer = new FileWriter(dir) ) {
 
 				JSONObject jObj = extractFromText(parsedExcel[i]);
-				System.out.println(jObj.toString());
+				writer.write(jObj.toString());
 				
 			} catch (IOException e) { e.printStackTrace(); continue;}
 			

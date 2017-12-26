@@ -61,7 +61,6 @@ public class ExcelReader{
 					parse[n] += ";";
 			}
 			
-			System.out.println(parse[n].toString());
 			
 		}
 		
