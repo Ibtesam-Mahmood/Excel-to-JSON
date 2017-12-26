@@ -82,7 +82,7 @@ public class JSONWriter {
 	
 	private String JSONName(File file) {
 		String orName = file.getName();
-		return orName.substring(0, orName.indexOf(".") ) + ".txt";
+		return orName.substring(0, orName.indexOf(".") ) + ".Json";
 	}
 	
 }
