@@ -1,12 +1,14 @@
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import org.json.simple.JSONObject;
 
 public class JSONWriter {
 
@@ -24,29 +26,29 @@ public class JSONWriter {
 		
 		for (int i = 0; i < files.length; i++) {
 			
+			String dir = finalPath.toString() + "\\" +  JSONName(files[i]);
 			
-			try {
+			try( FileWriter writer = new FileWriter(dir) ) {
+
 				
-				FileOutputStream f = new FileOutputStream(finalPath.toString() + "\\" +  JSONName(files[i]) );
-				Writer writer = new BufferedWriter( new OutputStreamWriter(f) );
-				writer.write("{");
 				
-				String[] indexObjects = parsedExcel[i].split(";");
-				for (int j = 0; j < indexObjects.length; j++) {
-					writer.write(indexObjects[j]);
-					if(j != indexObjects.length - 1)
-						writer.write(",");
-				}
-				
-				writer.write("}");
-				
-			} catch (IOException e) { e.printStackTrace(); continue; }
+			} catch (IOException e) { e.printStackTrace(); continue;}
 			
 		
 			
 		}
 		
 		
+	}
+	
+	
+	private JSONObject extractFromText(String text) {
+		
+		JSONObject jObj = new JSONObject();
+		
+		
+		
+		return jObj;
 	}
 	
 	

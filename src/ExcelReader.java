@@ -47,21 +47,21 @@ public class ExcelReader{
 			for (int i = 0; i < sheet.getRows(); i++) {
 				int size = checkRowSize(i, sheet);
 				
-				if(size == 1)
-					parse[n] += sheet.getCell(0, i).getContents() + ":" + sheet.getCell(1, i).getContents() + ";\n";
 				
-				else if(size > 1) {
-					parse[n] += sheet.getCell(0, i).getContents() + ":[";
-					
-					for(int j = 0; j < size; j++) {
-						parse[n] += sheet.getCell(j+1, i).getContents();
-						if(j != size-1)
-							parse[n] += ",";
-					}
-					
-					parse[n] += "];\n";
+				parse[n] += sheet.getCell(0, i).getContents() + ":";
+				
+				for(int j = 0; j < size; j++) {
+					parse[n] += sheet.getCell(j+1, i).getContents();
+					if(j != size-1)
+						parse[n] += ",";
 				}
+					
+				
+				if(i != sheet.getRows() - 1)
+					parse[n] += ";\n";
 			}
+			
+			System.out.println(parse[n].toString());
 			
 		}
 		
