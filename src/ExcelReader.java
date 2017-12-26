@@ -58,7 +58,7 @@ public class ExcelReader{
 					
 				
 				if(i != sheet.getRows() - 1)
-					parse[n] += ";\n";
+					parse[n] += ";";
 			}
 			
 			System.out.println(parse[n].toString());

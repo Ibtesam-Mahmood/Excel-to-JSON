@@ -8,6 +8,7 @@ import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class JSONWriter {
@@ -30,7 +31,8 @@ public class JSONWriter {
 			
 			try( FileWriter writer = new FileWriter(dir) ) {
 
-				
+				JSONObject jObj = extractFromText(parsedExcel[i]);
+				System.out.println(jObj.toString());
 				
 			} catch (IOException e) { e.printStackTrace(); continue;}
 			
@@ -46,7 +48,33 @@ public class JSONWriter {
 		
 		JSONObject jObj = new JSONObject();
 		
+		String[] components = text.split(";");
 		
+		for (int i = 0; i < components.length; i++) {
+			
+			String[] variables = components[i].split(":");
+			
+			String name = variables[0];
+			String[] values = variables[1].split(",");
+			
+			if(values.length == 1) {
+				jObj.put(name, values[0]);
+			}
+			else {
+				
+				JSONArray array =  new JSONArray();
+				
+				for (int j = 0; j < values.length; j++) {
+					
+					array.add(values[j]);
+					
+				}
+				
+				jObj.put(name, array);
+				
+			}
+			
+		}
 		
 		return jObj;
 	}
