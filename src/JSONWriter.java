@@ -13,13 +13,13 @@ import org.json.simple.JSONObject;
 
 public class JSONWriter {
 
-	private final Path finalPath =  Paths.get("files\\Final").toAbsolutePath();
+	private Path finalPath;
 	
 	private String[] parsedExcel;
 	private File[] files;
 	
-	public JSONWriter(String[] parsedExcel, File[] files) {
-		this.parsedExcel = parsedExcel;
+	public JSONWriter(Path fin, File[] files) {
+		this.finalPath = fin;
 		this.files = files;
 	}
 	

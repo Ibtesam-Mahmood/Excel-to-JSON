@@ -11,17 +11,21 @@ import jxl.read.biff.BiffException;
 public class ExcelReader{
 
 	
-	private final Path initialPath = Paths.get("files\\Base").toAbsolutePath();
+	private Path initialPath;
+
+	private JSONWriter writer;
 	
 	private File[] files;
 	
-	public ExcelReader() {
-		files = initialPath.toFile().listFiles();
+	public ExcelReader(Path init, Path fin)
+	{
+	    this.initialPath = init;
+		this.files = initialPath.toFile().listFiles();
+		this.writer = new JSONWriter(fin, this.files);
 	}
 	
 	public void convert() {
 		String[] JSONObjects = parseExcel();
-		JSONWriter writer =  new JSONWriter(JSONObjects, this.files);
 		writer.WriteJSON();
 	}
 	
