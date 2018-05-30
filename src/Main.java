@@ -3,12 +3,13 @@ import java.nio.file.Paths;
 
 public class Main {
 
-	Path initialPath = Paths.get("files\\Base").toAbsolutePath();
-	Path endingPath = Paths.get("files\\Final").toAbsolutePath();
 
 	public static void main(String[] args) {
-		ExcelReader reader =  new ExcelReader();
-		reader.convert();
+
+		final Path initialPath = Paths.get("files\\Base").toAbsolutePath(); //Starting path for excel files
+		final Path endingPath = Paths.get("files\\Final").toAbsolutePath(); //Ending path for JSON files
+
+		ExcelReader reader =  new ExcelReader(initialPath, endingPath);
 	}
 	
 }

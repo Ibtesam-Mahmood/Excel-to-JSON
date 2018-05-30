@@ -72,7 +72,9 @@ public class ExcelReader{
 		return parse;
 		
 	}
-	
+
+	//Determines if a file is an xls file
+    //xlsx files are not compatible
 	public boolean isExcel(File file) {
 		String name = file.getName();
 		String format = name.substring(name.indexOf("."), name.length());
@@ -84,7 +86,8 @@ public class ExcelReader{
 			return false;
 		}
 	}
-	
+
+	//Determines the size of the row on a given sheet
 	private int checkRowSize(int row, Sheet sheet) {
 		int n = 0;
 		
