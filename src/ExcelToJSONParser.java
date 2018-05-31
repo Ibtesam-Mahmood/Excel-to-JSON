@@ -16,8 +16,6 @@ public class ExcelToJSONParser {
 	
 	private Path initialPath;
 	private Path finalPath;
-
-	private JSONWriter writer;
 	
 	private File[] files;
 	
@@ -27,14 +25,9 @@ public class ExcelToJSONParser {
 	    this.finalPath = fin;
 		this.files = initialPath.toFile().listFiles();
 	}
-	
-	public void convert() {
-		parseExcel();
-		writer.WriteJSON();
-	}
 
 	//Loops through the files within the initial directory and parses them
-	private void parseExcel() {
+	public void parse() {
 
 		for(int n = 0; n < files.length; n++) {
 

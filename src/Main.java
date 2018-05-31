@@ -10,6 +10,8 @@ public class Main {
 		final Path endingPath = Paths.get("files\\Final").toAbsolutePath(); //Ending path for JSON files
 
 		ExcelToJSONParser reader =  new ExcelToJSONParser(initialPath, endingPath);
+
+		reader.parse();
 	}
 	
 }
