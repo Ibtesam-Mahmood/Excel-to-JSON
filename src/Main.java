@@ -9,7 +9,7 @@ public class Main {
 		final Path initialPath = Paths.get("files\\Base").toAbsolutePath(); //Starting path for excel files
 		final Path endingPath = Paths.get("files\\Final").toAbsolutePath(); //Ending path for JSON files
 
-		ExcelReader reader =  new ExcelReader(initialPath, endingPath);
+		ExcelToJSONParser reader =  new ExcelToJSONParser(initialPath, endingPath);
 	}
 	
 }

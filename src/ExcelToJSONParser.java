@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,61 +11,52 @@ import jxl.read.biff.BiffException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-public class ExcelReader{
+public class ExcelToJSONParser {
 
 	
 	private Path initialPath;
+	private Path finalPath;
 
 	private JSONWriter writer;
 	
 	private File[] files;
 	
-	public ExcelReader(Path init, Path fin)
+	public ExcelToJSONParser(Path init, Path fin)
 	{
 	    this.initialPath = init;
+	    this.finalPath = fin;
 		this.files = initialPath.toFile().listFiles();
-		this.writer = new JSONWriter(fin, this.files);
 	}
 	
 	public void convert() {
 		parseExcel();
 		writer.WriteJSON();
 	}
-	
+
+	//Loops through the files within the initial directory and parses them
 	private void parseExcel() {
 
 		for(int n = 0; n < files.length; n++) {
 
-
+		    //Checks if the file is and xls file
 		    if(isExcel(files[n]))
 		        parseSheet(files[n]);
-//            try{
-//
-//                Workbook w =  Workbook.getWorkbook(files[n]);
-//                sheet = w.getSheet(0);
-//
-//            } catch(BiffException | IOException e) { e.printStackTrace(); return null; }
-//
-//            for (int i = 0; i < sheet.getRows(); i++) {
-//                int size = checkRowSize(i, sheet);
-//
-//
-//                parse[n] += sheet.getCell(0, i).getContents() + ":";
-//
-//                for(int j = 0; j < size; j++) {
-//                    parse[n] += sheet.getCell(j+1, i).getContents();
-//                    if(j != size-1)
-//                        parse[n] += ",";
-//                }
-//
-//
-//                if(i != sheet.getRows() - 1)
-//                    parse[n] += ";";
-//            }
 
 		}
 
 	}
+
+	private void writeJSON(JSONObject object, File file){
+
+        String dir = finalPath.toString() + "\\" +  JSONName(file);
+
+        try( FileWriter writer = new FileWriter(dir) ) {
+
+            writer.write(object.toString());
+
+        } catch (IOException e) { e.printStackTrace(); return;}
+
+    }
 
 	//Parses the Main sheet in the given file
 	private void parseSheet(File file){
@@ -73,13 +65,15 @@ public class ExcelReader{
         JSONObject object;
 
         try{
-
+                //Obtains the main sheet
                 Workbook w =  Workbook.getWorkbook(file);
                 sheet = w.getSheet(0);
 
         } catch(BiffException | IOException e) { e.printStackTrace(); return; }
 
+        //Creates the JSON object and writes it
         object =  createJSONObject(0, sheet.getRows(), sheet);
+        writeJSON(object, file);
 
     }
 
@@ -94,18 +88,18 @@ public class ExcelReader{
 
             if(size == 2){
                 if(name == "}") //Ending line of an object
-                    continue;
+                    continue; //Skip to the next line
                 else if(name == "{"){ //Starting of an object
 
                 }
-                else{ //Simple value
+                else{ //Simple value added to the parent json object
                     String value = sheet.getCell(1, i).getContents();
                     object.put(name, value);
                 }
 
 
             }
-            else{ //Create an array
+            else{ //Create an array and add it to the parent json object
                 JSONArray array = createJSONArray(i, sheet);
                 object.put(name, array);
             }
@@ -135,6 +129,12 @@ public class ExcelReader{
 
         return array;
 
+    }
+
+    //Converts the file name into a JSON file name
+    private String JSONName(File file) {
+        String orName = file.getName();
+        return orName.substring(0, orName.indexOf(".") ) + ".Json";
     }
 
 	//Determines if a file is an xls file
