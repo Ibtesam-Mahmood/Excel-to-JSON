@@ -46,6 +46,7 @@ public class ExcelToJSONParser {
         try( FileWriter writer = new FileWriter(dir) ) {
 
             writer.write(object.toString());
+            System.out.println("*ding*");
 
         } catch (IOException e) { e.printStackTrace(); return;}
 
@@ -79,10 +80,8 @@ public class ExcelToJSONParser {
             int size = checkRowSize(i, sheet);
             String name = sheet.getCell(0, i).getContents();
 
-            if(size == 2){
-                if(name == "}") //Ending line of an object
-                    continue; //Skip to the next line
-                else if(name == "{"){ //Starting of an object
+            if(size == 1){
+                if(name == "{"){ //Starting of an object
 
                 }
                 else{ //Simple value added to the parent json object
@@ -92,7 +91,7 @@ public class ExcelToJSONParser {
 
 
             }
-            else{ //Create an array and add it to the parent json object
+            else if(size > 1){ //Create an array and add it to the parent json object
                 JSONArray array = createJSONArray(i, sheet);
                 object.put(name, array);
             }
@@ -110,11 +109,14 @@ public class ExcelToJSONParser {
 	    JSONArray array =  new JSONArray();
 
 	    for (int i = 1; ; i++){
-
-	        String contents = sheet.getCell(i, row).getContents();
-
-	        if(contents == "")
-	            break;
+	    	
+	    	String contents = "";
+	    	
+	    	try {
+	    		contents = sheet.getCell(i, row).getContents();
+	    	} catch(ArrayIndexOutOfBoundsException e) { break; }
+	        
+	        System.out.println(contents);
 
 	        array.add(contents);
 
@@ -134,7 +136,7 @@ public class ExcelToJSONParser {
     //xlsx files are not compatible
 	public boolean isExcel(File file) {
 		String name = file.getName();
-		String format = name.substring(name.indexOf("."), name.length());
+		String format = name.substring(name.indexOf(".") + 1, name.length());
 		if(format.equalsIgnoreCase("xls")) {
 			return true;
 		}
@@ -147,7 +149,7 @@ public class ExcelToJSONParser {
 	//Determines the size of the row on a given sheet
 	private int checkRowSize(int row, Sheet sheet) {
 		int n = 0;
-		
+		//counts from the first value
 		for (int i = 1; i < sheet.getColumns(); i++) {
 			
 			Cell temp =  sheet.getCell(i, row);
