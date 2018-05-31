@@ -72,23 +72,37 @@ public class ExcelToJSONParser {
     }
 
     //Creates a JSON object with the parameters defined between the start and end
-    private JSONObject createJSONObject(int startRow, int endRow, Sheet sheet){
+    @SuppressWarnings("unchecked")
+	private JSONObject createJSONObject(int startRow, int endRow, Sheet sheet){
 
         JSONObject object =  new JSONObject();
 
-        for (int i = 0; i < sheet.getRows(); i++) {
+        for (int i = startRow; i < endRow; i++) {
             int size = checkRowSize(i, sheet);
             String name = sheet.getCell(0, i).getContents();
-
             if(size == 1){
-                if(name == "{"){ //Starting of an object
-
+                if(name.equals("{")){ //Starting of an object
+                	
+                	name = sheet.getCell(1, i).getContents();
+                	
+                	int closingRow = findClosingBracketIndex(i + 1, sheet); //Finds where the internal JSONObject ends
+                	int begginingRow = i + 1;
+                	
+                	
+                	if(closingRow == -1) {
+                		System.out.println("Invalid object format");
+                		continue;
+                	}
+                	
+                	i = closingRow;
+                	
+                	JSONObject value = createJSONObject(begginingRow, closingRow, sheet);
+                	object.put(name, value);              	
                 }
                 else{ //Simple value added to the parent json object
                     String value = sheet.getCell(1, i).getContents();
                     object.put(name, value);
                 }
-
 
             }
             else if(size > 1){ //Create an array and add it to the parent json object
@@ -104,6 +118,7 @@ public class ExcelToJSONParser {
     }
 
     //Creates a JSON array out of a given row
+    @SuppressWarnings("unchecked")
     private JSONArray createJSONArray(int row, Sheet sheet){
 
 	    JSONArray array =  new JSONArray();
@@ -114,9 +129,10 @@ public class ExcelToJSONParser {
 	    	
 	    	try {
 	    		contents = sheet.getCell(i, row).getContents();
+	    		if(contents.equals("")) //Breaks if empty
+	    			break;
+	    		
 	    	} catch(ArrayIndexOutOfBoundsException e) { break; }
-	        
-	        System.out.println(contents);
 
 	        array.add(contents);
 
@@ -124,6 +140,45 @@ public class ExcelToJSONParser {
 
         return array;
 
+    }
+    
+    //Finds the next Closing Bracket after the starting one
+    private int findClosingBracketIndex(int startRow, Sheet sheet) {
+    	
+    	int row = -1; //If -1 is returned then there is an error in the format
+    	int braceCounter = 0; //Counts for the number of internal opening braces
+    	
+    	for(int i = startRow; startRow < sheet.getRows(); i++) {
+    		
+    		String contents;
+    		
+	    	try {
+	    		contents = sheet.getCell(0, i).getContents();
+	    	} catch(ArrayIndexOutOfBoundsException e) { break; }
+    		
+//	    	System.out.println(contents);
+	    	
+    		if(contents.equals("{")) {
+    			braceCounter++;
+//    			System.out.println(braceCounter);
+    		}
+    		
+    		if(contents.equals("}")) {
+    			
+    			if(braceCounter == 0)
+    				return i;
+    			else
+    				braceCounter--;
+    			
+//    			System.out.println(braceCounter);
+    			
+    		}
+    		
+    	}
+    	
+    	
+    	return row;
+    	
     }
 
     //Converts the file name into a JSON file name

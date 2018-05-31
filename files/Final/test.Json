@@ -1,1 +1,9 @@
-{"hello":["3","2"],"int":"2"}
+{
+	"internal":{
+		"internal_array":["5","6","2"],
+		"internal_int":"7"
+	},
+	"array":["3","2"],
+	"int":"2"
+
+}
