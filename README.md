@@ -1,6 +1,6 @@
 # Excel-to-JSON
 
-![Base Excel](//imgs//excel.png)
+![Base Excel](https://github.com/Ibtesam-Mahmood/Excel-to-JSON/blob/master/imgs/excel.png)
 
 Converts basic excel files into JSON files
 
